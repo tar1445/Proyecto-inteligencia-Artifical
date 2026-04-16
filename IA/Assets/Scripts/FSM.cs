@@ -38,9 +38,24 @@ public class FSM : MonoBehaviour
                     currentState = EnemyState.Kill;
 
                 }
+               
                 break;
 
-        
+            case EnemyState.Kill:
+
+                if (!isNear && canSeePlayer)
+                {
+                    currentState = EnemyState.Persuit;
+                }
+
+                if (!canSeePlayer)
+                {
+                    currentState = EnemyState.Patrol;
+                }
+
+                break;
+
+
         }
     }
    

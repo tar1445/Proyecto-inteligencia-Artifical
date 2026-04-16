@@ -1,4 +1,6 @@
+using UnityEditor.SearchService;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class EnemyController : MonoBehaviour
 {
@@ -77,9 +79,23 @@ public class EnemyController : MonoBehaviour
         );
     }
 
+    private void OnCollisionEnter(Collision collision)
+    {
+            if (collision.gameObject.CompareTag("Player"))
+        {
+            isNear = true;
+            Debug.Log("colission");
+        }
+    }
+    private void OnCollisionExit(Collision collision) { isNear = false; }
     void _kill()
     {
-
+        ResetScene();
+        Debug.Log("Game Over");
     }
 
+    public void ResetScene()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
 }
