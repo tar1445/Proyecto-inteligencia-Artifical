@@ -81,13 +81,14 @@ public class EnemyController : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-            if (collision.gameObject.CompareTag("Player"))
+        if (collision.gameObject.CompareTag("Player"))
         {
             isNear = true;
             Debug.Log("colission");
         }
     }
     private void OnCollisionExit(Collision collision) { isNear = false; }
+
     void _kill()
     {
         ResetScene();
