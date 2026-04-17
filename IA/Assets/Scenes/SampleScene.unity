@@ -519,7 +519,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 10
   camara: {fileID: 1732760755}
-  gravedad: 5
 --- !u!54 &634536710
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -559,7 +558,7 @@ GameObject:
   - component: {fileID: 686569137}
   - component: {fileID: 686569136}
   - component: {fileID: 686569135}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -943,8 +942,15 @@ MonoBehaviour:
   los: {fileID: 1516146796}
   fsm: {fileID: 1084643182}
   speed: 5
-  rotationSpeed: 5
+  rotationSpeed: 10
   isNear: 0
+  wanderChangeInterval: 2
+  wanderTurnSpeed: 45
+  checkDistance: 2
+  groundCheckDistance: 2
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 8
 --- !u!114 &1084643182
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -6,7 +6,8 @@ public class FSM : MonoBehaviour
     {
         Patrol, 
         Persuit,
-        Kill
+        Kill,
+        Wander
     }
 
 
@@ -21,7 +22,9 @@ public class FSM : MonoBehaviour
                 if (canSeePlayer) 
                 { 
                 currentState = EnemyState.Persuit;
-                
+                }else if(!canSeePlayer)
+                {
+                    currentState = EnemyState.Wander;
                 }
 
             break;
@@ -29,7 +32,7 @@ public class FSM : MonoBehaviour
 
                 if (!canSeePlayer) 
                 {
-                    currentState = EnemyState.Patrol;
+                    currentState = EnemyState.Wander;
                 
                 }
 
@@ -50,7 +53,16 @@ public class FSM : MonoBehaviour
 
                 if (!canSeePlayer)
                 {
-                    currentState = EnemyState.Patrol;
+                    currentState = EnemyState.Wander;
+                }
+
+                break;
+
+            case EnemyState.Wander:
+
+                if (canSeePlayer)
+                {
+                    currentState = EnemyState.Persuit;
                 }
 
                 break;
