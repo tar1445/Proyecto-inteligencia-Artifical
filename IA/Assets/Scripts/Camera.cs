@@ -10,7 +10,7 @@ public class Camera : MonoBehaviour
     [SerializeField] Transform player; 
     void Start()
     {
-        Cursor.lockState = CursorLockMode.Locked;
+        
         Cursor.visible = false;
     }
 
@@ -30,7 +30,7 @@ public class Camera : MonoBehaviour
 
         player.Rotate(Vector3.up * valorX);
 
-        if (Input.GetKeyDown(KeyCode.Escape)) { Cursor.lockState = CursorLockMode.Confined; }
+      
 
     }
 }

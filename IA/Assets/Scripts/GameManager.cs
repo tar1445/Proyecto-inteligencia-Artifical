@@ -8,9 +8,9 @@ public class GameManager : MonoBehaviour
   
   
     [Header("Time System")]
-    [SerializeField] private float secondsPerHour = 360f; 
+    [SerializeField] private float secondsPerHour = 60f; 
     private float timer;
-    private int currentHour = 12;
+    private int currentHour = 0;
 
     [Header("UI")]
     [SerializeField] private Text hourText;
@@ -31,28 +31,31 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         if (gameEnded) return;
-
+        
         timer += Time.deltaTime;
 
         if (timer >= secondsPerHour)
         {
             timer = 0f;
-            currentHour++;
+            currentHour +=1;
 
-            if (currentHour > 6)
+            if (currentHour >= 6)
             {
+                
                 StartCoroutine(Win());
             }
-            else
-            {
-                UpdateUI();
-            }
+          
         }
+        UpdateUI();
     }
 
     void UpdateUI()
     {
-        hourText.text = currentHour + " AM";
+        hourText.text = 12 + " AM";
+        if (currentHour > 0)
+        {
+            hourText.text = currentHour + " AM";
+        }
     }
 
     public void PlayerDied()
@@ -84,7 +87,7 @@ public class GameManager : MonoBehaviour
     public void ResetGame()
     {
        
-        currentHour = 12;
+        currentHour = 0;
         timer = 0f;
         gameEnded = false;
 
