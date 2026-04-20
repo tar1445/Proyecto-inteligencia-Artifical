@@ -5,21 +5,10 @@ using System.Collections;
 
 public class GameManager : MonoBehaviour
 {
-    //public static GameManager Instance;
-    //void Awake()
-    //    {
-    //        if (Instance != null && Instance != this)
-    //        {
-    //            Destroy(gameObject);
-    //            return;
-    //        }
-
-    //        Instance = this;
-    //        DontDestroyOnLoad(gameObject);
-    //    }
-    
+  
+  
     [Header("Time System")]
-    [SerializeField] private float secondsPerHour = 60f; // duración de cada hora
+    [SerializeField] private float secondsPerHour = 360f; 
     private float timer;
     private int currentHour = 12;
 

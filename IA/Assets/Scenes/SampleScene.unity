@@ -216,15 +216,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 0ce659e8ce4fd504b8821097dc967c32, type: 3}
       propertyPath: m_LocalScale.x
-      value: 4.1688395
+      value: 2.7244198
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 0ce659e8ce4fd504b8821097dc967c32, type: 3}
       propertyPath: m_LocalScale.y
-      value: 25.9225
+      value: 16.940872
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 0ce659e8ce4fd504b8821097dc967c32, type: 3}
       propertyPath: m_LocalScale.z
-      value: 4.8952837
+      value: 3.1991658
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 0ce659e8ce4fd504b8821097dc967c32, type: 3}
       propertyPath: m_LocalPosition.x
@@ -428,7 +428,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d5e2f114e804e04b928696375f74f3f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  secondsPerHour: 60
+  secondsPerHour: 240
   hourText: {fileID: 776591606}
   winImage: {fileID: 1167014598}
   loseImage: {fileID: 623323342}
@@ -3922,8 +3922,8 @@ Transform:
   m_GameObject: {fileID: 1084643176}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.7832676, z: -0, w: 0.6216847}
-  m_LocalPosition: {x: -8.93, y: 1.379, z: 0}
-  m_LocalScale: {x: 0.70784104, y: 0.70784104, z: 0.70784104}
+  m_LocalPosition: {x: -8.93, y: 2.2, z: 0}
+  m_LocalScale: {x: 1.4736542, y: 1.4736542, z: 1.4736542}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 1516146792}

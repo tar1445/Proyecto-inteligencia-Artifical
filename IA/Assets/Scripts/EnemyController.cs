@@ -15,11 +15,11 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private float rotationSpeed;
     [SerializeField] private float PersuitrotationSpeed;
     [SerializeField] private bool isNear;
-    //GameManager manager;
+   
 
     [SerializeField] private Transform[] patrolPoints;
     [SerializeField] private float pointReachDistance = 1.5f;
-    // Detección de paredes
+
     [SerializeField] private float wallCheckDistance = 1.5f;
     [SerializeField] private LayerMask wallLayer;
 
@@ -51,7 +51,7 @@ public class EnemyController : MonoBehaviour
         }
 
         rb = GetComponent<Rigidbody>(); 
-        //manager = GetComponent<GameManager>();
+
     }
 
     private void Start()
@@ -133,11 +133,7 @@ public class EnemyController : MonoBehaviour
         Debug.Log("Game Over");
     }
 
-    //public void ResetScene()
-    //{
-    //    SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-    //}
-
+ 
     void _Wander()
     {
         if (patrolPoints == null || patrolPoints.Length == 0)
