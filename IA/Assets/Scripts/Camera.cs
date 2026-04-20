@@ -14,6 +14,7 @@ public class Camera : MonoBehaviour
         Cursor.visible = false;
     }
 
+
     void Update()
     {
         float valorX = Input.GetAxis("Mouse X") * Sensibilidad * Time.deltaTime;
@@ -29,6 +30,7 @@ public class Camera : MonoBehaviour
 
         player.Rotate(Vector3.up * valorX);
 
+        if (Input.GetKeyDown(KeyCode.Escape)) { Cursor.lockState = CursorLockMode.Confined; }
 
     }
 }

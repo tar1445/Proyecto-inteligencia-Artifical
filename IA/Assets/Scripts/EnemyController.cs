@@ -1,18 +1,33 @@
 ﻿using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UIElements;
 
 public class EnemyController : MonoBehaviour
 {
     [SerializeField] private Transform player;
     [SerializeField] private LineOfSight los;
+    [SerializeField] Rigidbody rb;
     [SerializeField] private FSM fsm;
-
-    [SerializeField] private float speed;
+    [SerializeField] Animator _animation;
+    [SerializeField] private float speedNormal;
+    [SerializeField] private float PersuitSpeed;
     [SerializeField] private float rotationSpeed;
+    [SerializeField] private float PersuitrotationSpeed;
     [SerializeField] private bool isNear;
+    //GameManager manager;
 
-    // Variables para el wander
+    [SerializeField] private Transform[] patrolPoints;
+    [SerializeField] private float pointReachDistance = 1.5f;
+    // Detección de paredes
+    [SerializeField] private float wallCheckDistance = 1.5f;
+    [SerializeField] private LayerMask wallLayer;
+
+    private int currentPoint = 0;
+   
+
+
+
     private Vector3 wanderDirection;
     private float wanderTimer;
 
@@ -34,6 +49,9 @@ public class EnemyController : MonoBehaviour
         {
             fsm = GetComponent<FSM>();
         }
+
+        rb = GetComponent<Rigidbody>(); 
+        //manager = GetComponent<GameManager>();
     }
 
     private void Start()
@@ -83,18 +101,20 @@ public class EnemyController : MonoBehaviour
 
     void _Pursuit()
     {
+        _animation.SetBool("correr", true);
         Vector3 dir = player.position - transform.position;
         dir.y = 0;
 
         Vector3 moveDir = dir.normalized;
 
-        transform.position += moveDir * speed * Time.deltaTime;
+        transform.position += moveDir * PersuitSpeed * Time.deltaTime;
 
         transform.forward = Vector3.Lerp(
             transform.forward,
             moveDir,
-            Time.deltaTime * rotationSpeed
-        );
+            Time.deltaTime * PersuitrotationSpeed);
+       
+
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -109,62 +129,96 @@ public class EnemyController : MonoBehaviour
 
     void _kill()
     {
-        ResetScene();
+        FindObjectOfType<GameManager>().PlayerDied();
         Debug.Log("Game Over");
     }
 
-    public void ResetScene()
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-    }
+    //public void ResetScene()
+    //{
+    //    SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    //}
 
     void _Wander()
     {
-        Vector3 dir = Wander();
+        if (patrolPoints == null || patrolPoints.Length == 0)
+            return;
 
-        // 🔍 Chequear si hay suelo adelante
+        Transform target = patrolPoints[currentPoint];
+
+        // Dirección hacia el punto
+        Vector3 direction = (target.position - transform.position);
+        direction.y = 0f;
+
+        float distance = direction.magnitude;
+
+        // 🔍 ORIGEN DEL RAYCAST
         Vector3 origin = transform.position + Vector3.up * 0.5f;
-        Vector3 forwardCheck = origin + dir * checkDistance;
 
-        RaycastHit hit;
+        // 👁️ RAYCASTS (frente + lados)
+        Vector3 forward = transform.forward;
+        Vector3 left = Quaternion.Euler(0, -30, 0) * forward;
+        Vector3 right = Quaternion.Euler(0, 30, 0) * forward;
 
-        // Tira un rayo hacia abajo desde adelante
-        bool haySuelo = Physics.Raycast(forwardCheck, Vector3.down, out hit, groundCheckDistance, groundLayer);
+        bool wallFront = Physics.Raycast(origin, forward, wallCheckDistance, wallLayer);
+        bool wallLeft = Physics.Raycast(origin, left, wallCheckDistance, wallLayer);
+        bool wallRight = Physics.Raycast(origin, right, wallCheckDistance, wallLayer);
 
-        if (!haySuelo)
+        // 🚧 SI HAY PARED → CAMBIAR DESTINO
+        if (wallFront || wallLeft || wallRight)
         {
-            // ❌ No hay suelo → girar
-            wanderDirection = Quaternion.Euler(0, Random.Range(90, 180), 0) * wanderDirection;
+            Debug.Log("Detectando pared");
+            currentPoint = (currentPoint + 1) % patrolPoints.Length;
+
+            // pequeño giro para despegarse
+            transform.Rotate(0, Random.Range(120, 180), 0);
+
+            target = patrolPoints[currentPoint];
+            direction = (target.position - transform.position);
+            direction.y = 0f;
+        }
+
+        // 🎯 SI LLEGÓ AL PUNTO → SIGUIENTE
+        if (distance < pointReachDistance)
+        {
+            currentPoint = (currentPoint + 1) % patrolPoints.Length;
             return;
         }
 
-        // ✔️ Hay suelo → moverse normal
-        transform.position += dir * speed * Time.deltaTime;
+        // NORMALIZAR DIRECCIÓN
+        direction.Normalize();
 
-        transform.forward = Vector3.Lerp(
-            transform.forward,
-            dir,
-            Time.deltaTime * rotationSpeed
-        );
-    }
+        // 🚶 MOVIMIENTO CON FÍSICAS
+        rb.MovePosition(rb.position + direction * speedNormal * Time.deltaTime);
 
-    private Vector3 Wander()
-    {
-        wanderTimer -= Time.deltaTime;
-
-        if (wanderTimer <= 0f)
+        // 🔄 ROTACIÓN SUAVE
+        if (direction != Vector3.zero)
         {
-            float randomAngle = Random.Range(-wanderTurnSpeed, wanderTurnSpeed);
-
-            Quaternion rotation = Quaternion.Euler(0f, randomAngle, 0f);
-
-            wanderDirection = rotation * wanderDirection;
-            wanderDirection.y = 0f;
-            wanderDirection.Normalize();
-
-            wanderTimer = wanderChangeInterval;
+            Quaternion targetRot = Quaternion.LookRotation(direction);
+            rb.MoveRotation(Quaternion.Slerp(rb.rotation, targetRot, rotationSpeed * Time.deltaTime));
         }
 
-        return wanderDirection;
+        // 🎬 ANIMACIÓN
+        _animation.SetBool("correr", false);
     }
+
+    //private Vector3 Wander()
+    //{
+    //    _animation.SetBool("correr", false);
+    //    wanderTimer -= Time.deltaTime;
+
+    //    if (wanderTimer <= 0f)
+    //    {
+    //        float randomAngle = Random.Range(-wanderTurnSpeed, wanderTurnSpeed);
+
+    //        Quaternion rotation = Quaternion.Euler(0f, randomAngle, 0f);
+
+    //        wanderDirection = rotation * wanderDirection;
+    //        wanderDirection.y = 0f;
+    //        wanderDirection.Normalize();
+
+    //        wanderTimer = wanderChangeInterval;
+    //    }
+
+    //    return wanderDirection;
+    //}
 }
